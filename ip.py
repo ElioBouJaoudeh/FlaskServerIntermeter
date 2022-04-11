@@ -246,8 +246,8 @@ def asn_info():
 # event()
 # alert()
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
 
-ip_info()
-asn_info()
+# ip_info()
+# asn_info()
