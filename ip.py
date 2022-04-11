@@ -248,3 +248,6 @@ def asn_info():
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
+
+ip_info()
+asn_info()
