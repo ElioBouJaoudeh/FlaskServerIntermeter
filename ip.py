@@ -5,6 +5,7 @@ import requests
 import json
 from requests import get
 from flask import Flask
+from flask_cors import CORS
 
 app = Flask(__name__)
 
