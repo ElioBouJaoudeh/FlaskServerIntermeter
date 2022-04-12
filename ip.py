@@ -17,7 +17,7 @@ CORS(app)
 # adr="185.185.179.8"
 def ip_info():
     ip = {}
-    adr =request.remote_addr
+    adr =request.environ.get('HTTP_X_REAL_IP', request.remote_addr) 
 
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     sourcevisib = "https://stat.ripe.net/data/routing-status/data.json?resource="+adr+"%2F24"
