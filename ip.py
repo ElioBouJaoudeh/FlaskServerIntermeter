@@ -7,18 +7,26 @@ from requests import get
 from flask import Flask
 from flask_cors import CORS
 from flask import request 
-
+from flask import jsonify
 app = Flask(__name__)
 
 CORS(app)
+
+@app.route('/', methods=['GET'])
+def get_tasks():
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        return {'ip': request.environ['REMOTE_ADDR']}
+    else:
+        return {'ip': request.environ['HTTP_X_FORWARDED_FOR']}
 
 @app.route("/ip")
 # private=socket.gethostbyname(socket.gethostname())
 # adr="185.185.179.8"
 def ip_info():
     ip = {}
-    adr = get('https://api.ipify.org').text 
-
+    adrr = get_tasks()
+    adr=adrr['ip']
+    
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     sourcevisib = "https://stat.ripe.net/data/routing-status/data.json?resource="+adr+"%2F24"
 
