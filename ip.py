@@ -276,11 +276,7 @@ def History():
 
     list = []
 
-    with open(r'C:\Users\Lea\Desktop\MDP\FlaskServerIntermeter\ip.json', 'r') as f:
-
-        data = json.load(f)
-
-    pref = data["prefix"]
+    pref = responseip["data"]["records"][0][0]["value"]
 
     for p in hist["data"]["by_origin"][0]["prefixes"]:
 
@@ -302,7 +298,7 @@ def History():
 
                 if "2022" in d["starttime"]:
 
-                    print("hi")
+                    #print("hi")
 
                     # print(p["timelines"])
 
