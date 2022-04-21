@@ -85,7 +85,11 @@ def ip_info():
 
 @app.route("/as")
 def asn_info():
-    asn = "42020"
+    adrr = get_tasks()
+    adr=adrr['ip']
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    asn = responseip["data"]["irr_records"][0][1]["value"]
     dictionary = {}
     sous_dictionnaire = {}
     dictionnaire = {}
