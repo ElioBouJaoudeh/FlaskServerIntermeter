@@ -6,7 +6,6 @@ import json
 from requests import get
 from flask import Flask
 from flask_cors import CORS
-from flask import request 
 
 app = Flask(__name__)
 
@@ -17,7 +16,7 @@ CORS(app)
 # adr="185.185.179.8"
 def ip_info():
     ip = {}
-    adr =request.environ.get('HTTP_X_REAL_IP', request.remote_addr) 
+    adr = get('https://api.ipify.org').text
 
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     sourcevisib = "https://stat.ripe.net/data/routing-status/data.json?resource="+adr+"%2F24"
