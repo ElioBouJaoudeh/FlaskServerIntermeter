@@ -254,6 +254,60 @@ def asn_info():
 ##
 # event()
 # alert()
+@app.route("/history")
+
+def History():
+    adrr = get_tasks()
+    adr=adrr['ip']
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    asn = responseip["data"]["irr_records"][0][1]["value"]
+    history = {}
+
+    sous_dict = {}
+
+    url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+asn
+
+    hist = requests.get(url).json()
+
+    list = []
+
+    with open(r'C:\Users\Lea\Desktop\MDP\FlaskServerIntermeter\ip.json', 'r') as f:
+
+        data = json.load(f)
+
+    pref = data["prefix"]
+
+    for p in hist["data"]["by_origin"][0]["prefixes"]:
+
+        list.append(p["prefix"])
+
+    for l in list:
+
+        if l == pref:
+
+            # date = "2022"
+
+            i = 0
+
+            for d in p["timelines"]:
+
+                # print(d)
+
+                # print(d["starttime"])
+
+                if "2022" in d["starttime"]:
+
+                    print("hi")
+
+                    # print(p["timelines"])
+
+                    sous_dict[i] = d
+
+                    i = i+1
+
+    history[p["prefix"]] = sous_dict
+    return history
 
 if __name__ == "__main__":
     app.run(debug=True)
