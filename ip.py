@@ -103,10 +103,7 @@ def asn_info():
     # nb of prefixes for each autonomous system
     url = "https://stat.ripe.net/data/routing-status/data.json?resource="+asn
     response1 = requests.get(url).json()
-    nb_prefix = response1["data"]["announced_space"]
-    nb = response1["data"]["announced_space"]["v4"]["prefixes"] + \
-        response1["data"]["announced_space"]["v6"]["prefixes"]
-    print(nb)
+    nb = response1["data"]["announced_space"]["v4"]["prefixes"]+response1["data"]["announced_space"]["v6"]["prefixes"]
     sous_dictionnaire["Number of prefixes"] = nb
     sous_dictionnaire["v4"] = response1["data"]["announced_space"]["v4"]["prefixes"]
     sous_dictionnaire["v6"] = response1["data"]["announced_space"]["v6"]["prefixes"]
