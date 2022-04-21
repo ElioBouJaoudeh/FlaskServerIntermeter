@@ -86,7 +86,7 @@ def asn_info():
     adr=adrr['ip']
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][1]["value"]
+    asn = responseip["data"]["irr_records"][0][2]["value"]
     dictionary = {}
     sous_dictionnaire = {}
     dictionnaire = {}
@@ -259,7 +259,7 @@ def History():
     adr=adrr['ip']
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][1]["value"]
+    asn = responseip["data"]["irr_records"][0][2]["value"]
     history = {}
 
     sous_dict = {}
