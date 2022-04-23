@@ -260,6 +260,7 @@ def History():
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
     asn = responseip["data"]["irr_records"][0][2]["value"]
+
     history = {}
 
     sous_dict = {}
@@ -271,10 +272,13 @@ def History():
     list = []
 
     pref = responseip["data"]["records"][0][0]["value"]
+    pref=pref[0:(len(pref)-3)]
 
     for p in hist["data"]["by_origin"][0]["prefixes"]:
 
         list.append(p["prefix"])
+
+        # print(p)
 
     for l in list:
 
@@ -292,7 +296,7 @@ def History():
 
                 if "2022" in d["starttime"]:
 
-                    #print("hi")
+                    print("hi")
 
                     # print(p["timelines"])
 
@@ -301,7 +305,23 @@ def History():
                     i = i+1
 
     history[p["prefix"]] = sous_dict
+
+
+    print(history)
+
     return history
+
+@app.route("/pred")
+def Pred():
+    adrr = get_tasks()
+    adr=adrr['ip']
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    asn = responseip["data"]["irr_records"][0][2]["value"]
+    url = 'https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-11T12%3A00%3A00&hide_empty_samples=false&max_samples=5000&resource=AS'+str(asn)+'&starttime=2021-04-11T00%3A00%3A00'
+    r = requests.get(url)
+    json = r.json()
+    return json 
 
 if __name__ == "__main__":
     app.run(debug=True)
