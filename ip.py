@@ -301,15 +301,12 @@ def History():
 
                 if "2022" in d["starttime"]:
 
-                    print("hi")
+                    
 
-                    # print(p["timelines"])
-
-                    sous_dict[i] = d
-
+                    sous_dict[d["starttime"][0:10]] = d["full_peers_seeing"]
+                    sous_dict[d["starttime"][0:10]] = d["full_peers_seeing"]
                     i = i+1
-
-            
+ 
 
 
     return sous_dict
