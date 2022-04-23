@@ -309,10 +309,10 @@ def History():
 
                     i = i+1
 
-            history[l] = sous_dict
+            
 
 
-    return history
+    return sous_dict
 @app.route("/pred")
 def Pred():
     adrr = get_tasks()
