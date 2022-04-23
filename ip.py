@@ -257,6 +257,7 @@ def asn_info():
 def History():
     adrr = get_tasks()
     adr=adrr['ip']
+    adr='94.187.8.0'
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
     asn = responseip["data"]["irr_records"][0][2]["value"]
@@ -269,20 +270,24 @@ def History():
 
     hist = requests.get(url).json()
 
-    list = []
+    liste = []
 
     pref = responseip["data"]["records"][0][0]["value"]
     pref=pref[0:(len(pref)-3)]
 
     for p in hist["data"]["by_origin"][0]["prefixes"]:
 
-        list.append(p["prefix"])
+        liste.append(p["prefix"])
 
-        # print(p)
+    j=0
+    while(j<len(liste)):
+        liste[j]=liste[j][0:(len(liste[j])-3)]
+        j=j+1
 
-    for l in list:
-
-        if l == pref:
+    for l in liste:
+        
+        if (pref==l):
+            
 
             # date = "2022"
 
@@ -304,13 +309,10 @@ def History():
 
                     i = i+1
 
-    history[p["prefix"]] = sous_dict
+            history[l] = sous_dict
 
-
-    print(history)
 
     return history
-
 @app.route("/pred")
 def Pred():
     adrr = get_tasks()
