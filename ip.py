@@ -262,7 +262,7 @@ def History():
     responseip = requests.get(sourceip).json()
     asn = responseip["data"]["irr_records"][0][2]["value"]
 
-    history = []
+    history = {}
 
     sous_dict = {}
 
@@ -302,12 +302,15 @@ def History():
                 if "2022" in d["starttime"]:
 
                     
-                    history.append({"time":d["starttime"][0:10],"nb":d["full_peers_seeing"]})
-                    history.append({"time":d["endtime"][0:10],"nb":d["full_peers_seeing"]})
-                                
+
+                    sous_dict[d["starttime"][0:10]] = d["full_peers_seeing"]
+                    sous_dict[d["endtime"][0:10]] = d["full_peers_seeing"]
+                    i = i+1
+
+            
 
 
-    return history
+    return sous_dict
 @app.route("/pred")
 def Pred():
     adrr = get_tasks()
