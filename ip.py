@@ -315,7 +315,7 @@ def History():
 @app.route("/all")
 def All():
     
-    adr='94.187.8.0'
+    adr='91.232.100.0'
     dictionnaire = {}
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
