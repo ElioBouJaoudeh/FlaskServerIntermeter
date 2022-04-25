@@ -257,7 +257,7 @@ def asn_info():
 def History():
     adrr = get_tasks()
     adr=adrr['ip']
-    adr='94.187.8.0'
+    #adr='94.187.8.0'
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
     asn = responseip["data"]["irr_records"][0][2]["value"]
@@ -314,8 +314,10 @@ def History():
 
 @app.route("/all")
 def All():
-    
-    adr='91.232.100.0'
+
+    adrr = get_tasks()
+    adr=adrr['ip']
+    #adr='91.232.100.0'
     dictionnaire = {}
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
