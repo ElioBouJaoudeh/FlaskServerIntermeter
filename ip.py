@@ -311,6 +311,61 @@ def History():
 
 
     return sous_dict
+
+@app.route("/all")
+def All():
+    
+    adr='94.187.8.0'
+    dictionnaire = {}
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    asn = responseip["data"]["irr_records"][0][2]["value"]
+    sous_dict = {}
+    
+    list_prefixe = "https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
+    lists = requests.get(list_prefixe).json()
+    j = 0
+    for i in lists["data"]["prefixes"]:
+        prefix = i["prefix"]
+        dictionnaire[j] = prefix
+        j = j+1
+    sous_dict = {}
+
+    k=0
+    
+    while (k<len(dictionnaire)):
+        
+
+        url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+str(dictionnaire[k][0:(len(dictionnaire[k])-3)])
+
+        hist = requests.get(url).json()
+
+        for p in hist["data"]["by_origin"]:
+            if (p["origin"]==asn):
+                
+
+                for d in p["prefixes"][0]["timelines"]:
+                    # print(d)
+
+                    # print(d["starttime"])
+
+                    if "2022" in d["starttime"]:
+                        if (d["starttime"][0:10] in sous_dict.keys()):
+                            sous_dict[d["starttime"][0:10]] = sous_dict[d["starttime"][0:10]]+d["full_peers_seeing"]
+                        if (d["endtime"][0:10] in sous_dict.keys()):
+                            sous_dict[d["endtime"][0:10]] = sous_dict[d["endtime"][0:10]] +d["full_peers_seeing"]
+                        else:
+                            sous_dict[d["starttime"][0:10]] = d["full_peers_seeing"]
+                            sous_dict[d["endtime"][0:10]] =d["full_peers_seeing"]
+                        
+        k=k+1
+    for i in sous_dict.keys():
+        sous_dict[i]=sous_dict[i]/len(dictionnaire)
+
+    return sous_dict
+
+
+
 @app.route("/pred")
 def Pred():
     adrr = get_tasks()
