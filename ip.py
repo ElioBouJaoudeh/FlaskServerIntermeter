@@ -41,9 +41,9 @@ def ip_info():
     ip["country"] = country
     ipp = responseip["data"]["irr_records"][0][0]["value"]
     ip["ip"] = ipp
-    asn_name = responseip["data"]["irr_records"][0][1]["value"]
+    asn_name = responseip["data"]["irr_records"][0][2]["value"]
     ip["asnname"] = asn_name
-    asn_code = responseip["data"]["irr_records"][0][2]["value"]
+    asn_code = responseip["data"]["irr_records"][0][1]["value"]
     ip["asncode"] = asn_code
 
     try:
@@ -86,7 +86,12 @@ def asn_info():
     adr=adrr['ip']
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][2]["value"]
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
     dictionary = {}
     sous_dictionnaire = {}
     dictionnaire = {}
@@ -260,7 +265,12 @@ def History():
     #adr='94.187.8.0'
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][2]["value"]
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
 
     history = {}
 
@@ -321,7 +331,12 @@ def All():
     dictionnaire = {}
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][2]["value"]
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
     sous_dict = {}
     
     list_prefixe = "https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
@@ -374,11 +389,16 @@ def Pred():
     adr=adrr['ip']
     sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
     responseip = requests.get(sourceip).json()
-    asn = responseip["data"]["irr_records"][0][2]["value"]
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
     url = 'https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-11T12%3A00%3A00&hide_empty_samples=false&max_samples=5000&resource=AS'+str(asn)+'&starttime=2021-04-11T00%3A00%3A00'
     r = requests.get(url)
     json = r.json()
     return json 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
