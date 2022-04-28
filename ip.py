@@ -41,10 +41,14 @@ def ip_info():
     ip["country"] = country
     ipp = responseip["data"]["irr_records"][0][0]["value"]
     ip["ip"] = ipp
-    asn_name = responseip["data"]["irr_records"][0][2]["value"]
-    ip["asnname"] = asn_name
-    asn_code = responseip["data"]["irr_records"][0][1]["value"]
-    ip["asncode"] = asn_code
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        ip["asncode"]=a
+        ip["asnname"]=b
+    if (any(c.isalpha() for c in b)==False):
+        ip["asncode"]=b
+        ip["asnname"]=a
 
     try:
         rpk = pk["data"]["validating_roas"]["validity"]
