@@ -5,6 +5,7 @@ from requests import get
 from flask import Flask
 from flask_cors import CORS
 from flask import request 
+import datetime
 app = Flask(__name__)
 
 CORS(app)
@@ -180,85 +181,85 @@ def asn_info():
 
 
 # def event():
-##    dict = {}
-##
-##    previous_date = datetime.datetime.today() - datetime.timedelta(days=1)
-##    times = str(int(round(previous_date.timestamp())))
-##
-##    curr_date = datetime.datetime.now()
-##    times1 = str(int(round(curr_date.timestamp())))
-##
+# #    dict = {}
+# #
+# #    previous_date = datetime.datetime.today() - datetime.timedelta(days=1)
+# #    times = str(int(round(previous_date.timestamp())))
+# #
+# #    curr_date = datetime.datetime.now()
+# #    times1 = str(int(round(curr_date.timestamp())))
+# #
 # url = 'https://ioda.caida.org/ioda/data/events?from=' + \
 # times+'&until='+times1+'&human=true&meta=country/LB'
-##    events = requests.get(url).json()
-##
-##    start_time = events["queryParameters"]["from"]
-##    end_time = events["queryParameters"]["until"]
-##
-##    timestamp = datetime.datetime.fromtimestamp(int(start_time))
-##    start = timestamp.strftime('%Y-%m-%d %H:%M:%S')
-##
-##    timestamp1 = datetime.datetime.fromtimestamp(int(end_time))
-##    end = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
-##
-##    print("Events occured:")
-##    list_events = events["data"]["events"]
+# #    events = requests.get(url).json()
+# #
+# #    start_time = events["queryParameters"]["from"]
+# #    end_time = events["queryParameters"]["until"]
+# #
+# #    timestamp = datetime.datetime.fromtimestamp(int(start_time))
+# #    start = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+# #
+# #    timestamp1 = datetime.datetime.fromtimestamp(int(end_time))
+# #    end = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
+# #
+# #    print("Events occured:")
+# #    list_events = events["data"]["events"]
 # print(list_events)
-##    dict["Events"] = list_events
-##
+# #    dict["Events"] = list_events
+# #
 # print("Country:")
-##    place = events["queryParameters"]["meta"]
+# #    place = events["queryParameters"]["meta"]
 # print(place)
-##    dict["Country"] = place
-##
-##    print("Start time:")
+# #    dict["Country"] = place
+# #
+# #    print("Start time:")
 # print(start)
-##    dict["Start-time"] = start
-##    print("End time:")
+# #    dict["Start-time"] = start
+# #    print("End time:")
 # print(end)
-##    dict["End-time"] = end
-##
+# #    dict["End-time"] = end
+# #
 # with open("events.json", "w") as outfile:
-##        json.dump(dict, outfile)
-##
-##
+# #        json.dump(dict, outfile)
+# #
+# #
 # def alert():
-##    dict = {}
-##
-##    curr_date = datetime.datetime.now()
+# #    dict = {}
+# #
+# #    curr_date = datetime.datetime.now()
 # print(curr_date)
-##    timestamp = str(int(round(curr_date.timestamp())))
+# #    timestamp = str(int(round(curr_date.timestamp())))
 # print(timestamp)
-##
+# #
 # url = 'https://ioda.caida.org/ioda/data/alerts?from='+timestamp + \
 # '&until='+timestamp+'&annotateMeta=true&human=true&meta=country/LB'
-##    alerts = requests.get(url).json()
-##
-##    start_time = alerts["queryParameters"]["from"]
-##    end_time = alerts["queryParameters"]["until"]
-##
-##    timestamp1 = datetime.datetime.fromtimestamp(int(start_time))
-##    start = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
-##
-##    timestamp2 = datetime.datetime.fromtimestamp(int(end_time))
-##    end = timestamp2.strftime('%Y-%m-%d %H:%M:%S')
-##
+# #    alerts = requests.get(url).json()
+# #
+# #    start_time = alerts["queryParameters"]["from"]
+# #    end_time = alerts["queryParameters"]["until"]
+# #
+# #    timestamp1 = datetime.datetime.fromtimestamp(int(start_time))
+# #    start = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
+# #
+# #    timestamp2 = datetime.datetime.fromtimestamp(int(end_time))
+# #    end = timestamp2.strftime('%Y-%m-%d %H:%M:%S')
+# #
 # print("Alerts:")
-##    list_alerts = alerts["data"]["alerts"]
+# #    list_alerts = alerts["data"]["alerts"]
 # print(list_alerts)
-##    dict["Alerts"] = list_alerts
-##
-##    print("Start time:")
+# #    dict["Alerts"] = list_alerts
+# #
+# #    print("Start time:")
 # print(start)
-##    dict["Start-time"] = start
-##    print("End time:")
+# #    dict["Start-time"] = start
+# #    print("End time:")
 # print(end)
-##    dict["End-time"] = end
-##
+# #    dict["End-time"] = end
+# #
 # with open("alerts.json", "w") as outfile:
-##        json.dump(dict, outfile)
-##
-##
+# #        json.dump(dict, outfile)
+# #
+# #
 # event()
 # alert()
 @app.route("/history")
@@ -403,6 +404,106 @@ def Pred():
     r = requests.get(url)
     json = r.json()
     return json 
+
+
+# @app.route("/alert")
+# def alert():
+#     dict = {}
+    
+#     curr_date = datetime.datetime.now()
+
+#     timestamp = str(int(round(curr_date.timestamp())))
+  
+    
+#     url = 'https://ioda.caida.org/ioda/data/alerts?from='+timestamp + \
+#     '&until='+timestamp+'&annotateMeta=true&human=true&meta=asn/3307'
+#     alerts = requests.get(url).json()
+    
+#     start_time = alerts["queryParameters"]["from"]
+#     end_time = alerts["queryParameters"]["until"]
+    
+#     timestamp1 = datetime.datetime.fromtimestamp(int(start_time))
+#     start = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
+    
+#     timestamp2 = datetime.datetime.fromtimestamp(int(end_time))
+#     end = timestamp2.strftime('%Y-%m-%d %H:%M:%S')
+    
+ 
+#     list_alerts = alerts["data"]["alerts"]
+
+#     dict["Alerts"] = list_alerts
+    
+    
+#     dict["Start-time"] = start
+    
+    
+#     dict["End-time"] = end
+
+#     s=""
+
+#     if not list_alerts:
+#         s="No Outages are expected"
+#         return s
+#     else:
+#         return list_alerts
+
+@app.route("/message")
+def message():
+    adrr = get_tasks()
+    adr=adrr['ip']
+   
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
+    dict = {}
+    mssg={}
+    previous_date = datetime.datetime.today() - datetime.timedelta(days=1)
+    times = str(int(round(previous_date.timestamp())))
+
+    curr_date = datetime.datetime.now()
+    times1 = str(int(round(curr_date.timestamp())))
+  
+    url = 'https://ioda.caida.org/ioda/data/events?from=' + \
+    times+'&until='+times1+'&human=true&meta=asn/'+asn
+    events = requests.get(url).json()
+    
+    start_time = events["queryParameters"]["from"]
+    end_time = events["queryParameters"]["until"]
+    
+    timestamp1 = datetime.datetime.fromtimestamp(int(start_time))
+    start = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
+    
+    timestamp2 = datetime.datetime.fromtimestamp(int(end_time))
+    end = timestamp2.strftime('%Y-%m-%d %H:%M:%S')
+    
+ 
+    list_events = events["data"]["events"]
+
+    dict["events"] = list_events
+    
+    
+    dict["Start-time"] = start
+    
+    
+    dict["End-time"] = end
+
+    s=""
+
+    if not list_events:
+        s="No outages occured while you were away"
+        mssg["outages"]=s
+        
+    else:
+        s="An Outage Occured"
+        mssg["outages"]=s
+
+    
+    return mssg
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
