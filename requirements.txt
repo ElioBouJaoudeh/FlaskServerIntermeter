@@ -3,4 +3,4 @@ requests==2.27.1
 ripe==0.0.4
 gunicorn==20.1.0
 Flask-Cors==3.0.10
-pandas @ file:///C:/ci/pandas_1635506685681/work
+pandas == 1.3.4
