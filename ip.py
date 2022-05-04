@@ -565,16 +565,7 @@ def ML():
     Y_pred = classifier.predict(nb)
     s=""
     mssg={}
-    if not list_events:
-        s="No outages occured while you were away"
-        mssg["outages"]=s
-        
-    else:
-        s="An Outage Occured"
-        mssg["outages"]=s
 
-    
-    
     if (Y_pred==1):
 
         s="Your network is prone to instability in the upcoming hours!"
