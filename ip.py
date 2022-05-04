@@ -6,7 +6,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask import request 
 import datetime
-import numpy as np
 import requests
 from requests import get
 
