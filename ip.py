@@ -538,7 +538,6 @@ def ML():
     r=df.shape[0]-1
     nb=df.iloc[r,0:2].values
     df = df.drop(df.shape[0]-1, axis=0)
-
     l=[]
     av=df["announcements"].mean()
     l.append(int(df["announcements"][0]>av))
@@ -562,11 +561,11 @@ def ML():
 
     classifier = SVC(kernel='rbf', random_state = 1,gamma=0.01)
     classifier.fit(X_train,Y_train)
-    Y_pred = classifier.predict(nb)
+    Y_pred = classifier.predict(nb.reshape(1, -1))
     s=""
     mssg={}
 
-    if (Y_pred==1):
+    if (Y_pred[0]==1):
 
         s="Your network is prone to instability in the upcoming hours!"
         mssg["outages"]=s
@@ -576,6 +575,7 @@ def ML():
         mssg["outages"]=s
 
     return mssg
+
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
