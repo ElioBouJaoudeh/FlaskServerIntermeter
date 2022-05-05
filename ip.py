@@ -7,7 +7,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask import request
 import datetime
-app = Flask(_
+
+app = Flask(__name__)
 
 CORS(app)
 
@@ -24,62 +25,62 @@ def get_tasks():
 # private=socket.gethostbcket.gethos
 # adr="185.185.179.8"
 def ip_info():
-    ip={}
-    adrr=get_tasks()
-    adr=adrr['ip']
+    ip = {}
+    adrr = get_tasks()
+    adr = adrr['ip']
 
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    sourcevisib="https://stat.ripe.net/data/routing-status/data.json?resource="+adr+"%2F24"
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    sourcevisib = "https://stat.ripe.net/data/routing-status/data.json?resource="+adr+"%2F24"
 
-    responseip=requests.get(sourceip).json()
-    visible=requests.get(sourcevisib).json()
+    responseip = requests.get(sourceip).json()
+    visible = requests.get(sourcevisib).json()
 
-    prefix=responseip["data"]["records"][0][0]["value"]
-    ip["prefix"]=prefix
+    prefix = responseip["data"]["records"][0][0]["value"]
+    ip["prefix"] = prefix
 
-    rpki="https://stat.ripe.net/data/rpki-validation/data.json?resource=38999&prefix="+prefix
-    pk=requests.get(rpki).json()
-    isp=responseip["data"]["records"][0][1]["value"]
-    ip["isp"]=isp
-    country=responseip["data"]["records"][0][2]["value"]
-    ip["country"]=country
-    ipp=responseip["data"]["irr_records"][0][0]["value"]
-    ip["ip"]=ipp
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    rpki = "https://stat.ripe.net/data/rpki-validation/data.json?resource=38999&prefix="+prefix
+    pk = requests.get(rpki).json()
+    isp = responseip["data"]["records"][0][1]["value"]
+    ip["isp"] = isp
+    country = responseip["data"]["records"][0][2]["value"]
+    ip["country"] = country
+    ipp = responseip["data"]["irr_records"][0][0]["value"]
+    ip["ip"] = ipp
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        ip[":=a
-        ip["as=b
+        ip["asncode"] = a
+        ip["asnname"] = b
     if (any(c.isalpha() for c in b) == False):
-        ip[":=b
-        ip["as=a
+        ip["asncode"] = b
+        ip["asnname"] = a
 
     try:
-        rpk=pk["data"]["validating_roas"]["validity"]
-        ip["rpki"]=rpk
+        rpk = pk["data"]["validating_roas"]["validity"]
+        ip["rpki"] = rpk
     except:
-        ip["rpki"]="Not valid"
+        ip["rpki"] = "Not valid"
 
-    ipv4_seeing=visible["data"]["visibility"]["v4"]["ris_peers_seeing"]
-    ipv4_total=visible["data"]["visibility"]["v4"]["total_ris_peers"]
+    ipv4_seeing = visible["data"]["visibility"]["v4"]["ris_peers_seeing"]
+    ipv4_total = visible["data"]["visibility"]["v4"]["total_ris_peers"]
 
     if (ipv4_seeing == ipv4_total):
-        ip["ipv4"]=100
+        ip["ipv4"] = 100
         print("100% visibility ipv4")
     else:
-        per=(ipv4_seeing*100)/ipv4_total
-        ip["ipv4"]=per
+        per = (ipv4_seeing*100)/ipv4_total
+        ip["ipv4"] = per
         print(str(per)+"% Visibility ipv4")
 
-    ipv6_seeing=visible["data"]["visibility"]["v6"]["ris_peers_seeing"]
-    ipv6_total=visible["data"]["visibility"]["v6"]["total_ris_peers"]
+    ipv6_seeing = visible["data"]["visibility"]["v6"]["ris_peers_seeing"]
+    ipv6_total = visible["data"]["visibility"]["v6"]["total_ris_peers"]
 
     if (ipv6_seeing == ipv6_total):
-        ip["ipv6"]=100
+        ip["ipv6"] = 100
         print("100% visibility ipv6")
     else:
-        per=(ipv6_seeing*100)/ipv6_total
-        ip["ipv6"]=per
+        per = (ipv6_seeing*100)/ipv6_total
+        ip["ipv6"] = per
         print(str(per)+"% Visibility ipv6")
 
     with open("ip.json", "w") as outfile:
@@ -90,90 +91,94 @@ def ip_info():
 
 @ app.route("/as")
 def asn_info():
-    adrr=get_tasks()
-    adr=adrr['ip']
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    responseip=requests.get(sourceip).json()
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    adrr = get_tasks()
+    adr = adrr['ip']
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        asn=a
+        asn = a
     if (any(c.isalpha() for c in b) == False):
-        asn=b
-    dictionary={}
-    sous_dictionnaire={}
-    dictionnaire={}
+        asn = b
+    dictionary = {}
+    sous_dictionnaire = {}
+    dictionnaire = {}
     # sourceasn="https://stat.ripe.net/data/country-resource-list/data.json?resource=LB"
     # responseasn = requests.get(sourceasn).json()
     # ASN=responseasn["data"]["resources"]["asn"]
 
     # for asn in ASN:
-    source="https://stat.ripe.net/data/visibility/data.json?include=peers_seeing&resource="+asn
-    source2="https://stat.ripe.net/data/routing-status/data.json?resource="+asn
-    source3="https://stat.ripe.net/data/whois/data.json?resource="+asn
-    source1='https://ihr.iijlab.net/ihr/api/networks/?number='+asn
+    source = "https://stat.ripe.net/data/visibility/data.json?include=peers_seeing&resource="+asn
+    source2 = "https://stat.ripe.net/data/routing-status/data.json?resource="+asn
+    source3 = "https://stat.ripe.net/data/whois/data.json?resource="+asn
+    source1 = 'https://ihr.iijlab.net/ihr/api/networks/?number='+asn
 
     # nb of prefixes for each autonomous system
-    url="https://stat.ripe.net/data/routing-status/data.json?resource="+asn
-    response1=requests.get(url).json()
-    nb=response1["data"]["announced_space"]["v4"]["prefixes"] + \
+    url = "https://stat.ripe.net/data/routing-status/data.json?resource="+asn
+    response1 = requests.get(url).json()
+    nb = response1["data"]["announced_space"]["v4"]["prefixes"] + \
         response1["data"]["announced_space"]["v6"]["prefixes"]
-    sous_dictionnaire["Number of prefixes"]=nb
-    sous_dictionnaire["v4"]=response1["data"]["announced_space"]["v4"]["prefixes"]
-    sous_dictionnaire["v6"]=response1["data"]["announced_space"]["v6"]["prefixes"]
+    sous_dictionnaire["Number of prefixes"] = nb
+    sous_dictionnaire["v4"] = response1["data"]["announced_space"]["v4"]["prefixes"]
+    sous_dictionnaire["v6"] = response1["data"]["announced_space"]["v6"]["prefixes"]
 
     # list of prefixes for an as
-    list_prefixe="https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
-    lists=requests.get(list_prefixe).json()
-    j=0
+    list_prefixe = "https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
+    lists = requests.get(list_prefixe).json()
+    j = 0
     for i in lists["data"]["prefixes"]:
-        prefix=i["prefix"]
+        prefix = i["prefix"]
         print(prefix)
-        dictionnaire[j]=prefix
-        j=j+1
-    sous_dictionnaire["List of prefixes"]=dictionnaire
-    ipv4_seeing=0
-    ipv4_total=0
-    ipv6_seeing=0
-    ipv6_total=0
-    response1=requests.get(source2).json()
-    response2=requests.get(source3).json()
-    response3=requests.get(source1).json()
+        dictionnaire[j] = prefix
+        j = j+1
+    sous_dictionnaire["List of prefixes"] = dictionnaire
+    ipv4_seeing = 0
+    ipv4_total = 0
+    ipv6_seeing = 0
+    ipv6_total = 0
+    response1 = requests.get(source2).json()
+    response2 = requests.get(source3).json()
+    response3 = requests.get(source1).json()
 
     print("Time:")
-    time=response1["data"]["last_seen"]["time"]
-    sous_dictionnaire["time"]=time
+    time = response1["data"]["last_seen"]["time"]
+    sous_dictionnaire["time"] = time
     print(time)
 
-response2["data"]["records"][0][1]["value"]
-    print("ASN   print(response1["data"]["visibility"])
-    sous_dictionnaire[=print disco=response3["results"][0]["disco"]
+    name = response2["data"]["records"][0][1]["value"]
+    print("ASN name:"+name)
+    print(response1["data"]["visibility"])
+    sous_dictionnaire["name"] = name
+    print(name)
+
+    disco = response3["results"][0]["disco"]
     print("Disconnection:"+str(disco))
-    sous_dictionnaire["disconnection"]=disco
+    sous_dictionnaire["disconnection"] = disco
 
     for i in response1:
-        ipv4_seeing=response1["data"]["visibility"]["v4"]["ris_peers_seeing"]
-        ipv4_total=response1["data"]["visibility"]["v4"]["total_ris_peers"]
+        ipv4_seeing = response1["data"]["visibility"]["v4"]["ris_peers_seeing"]
+        ipv4_total = response1["data"]["visibility"]["v4"]["total_ris_peers"]
     if (ipv4_seeing == ipv4_total):
-        sous_dictionnaire["ipv4"]=100
+        sous_dictionnaire["ipv4"] = 100
         print("100% visibility ipv4")
     else:
-        per=(ipv4_seeing*100)/ipv4_total
-        sous_dictionnaire["ipv4"]=per
+        per = (ipv4_seeing*100)/ipv4_total
+        sous_dictionnaire["ipv4"] = per
         print(str(per)+"% Visibility ipv4")
 
     for i in response1:
-        ipv6_seeing=response1["data"]["visibility"]["v6"]["ris_peers_seeing"]
-        ipv6_total=response1["data"]["visibility"]["v6"]["total_ris_peers"]
+        ipv6_seeing = response1["data"]["visibility"]["v6"]["ris_peers_seeing"]
+        ipv6_total = response1["data"]["visibility"]["v6"]["total_ris_peers"]
     if (ipv6_seeing == ipv6_total):
-        sous_dictionnaire["ipv6"]=100
+        sous_dictionnaire["ipv6"] = 100
         print("100% visibility ipv6")
     else:
-        per=(ipv6_seeing*100)/ipv6_total
-        sous_dictionnaire["ipv6"]=per
+        per = (ipv6_seeing*100)/ipv6_total
+        sous_dictionnaire["ipv6"] = per
         print(str(per)+"% Visibility ipv6")
 
-    dictionary[asn]=sous_dictionnaire
+    dictionary[asn] = sous_dictionnaire
     with open("sample.json", "w") as outfile:
         json.dump(dictionary, outfile, indent=4)
 
@@ -264,39 +269,39 @@ response2["data"]["records"][0][1]["value"]
 # alert()
 @ app.route("/history")
 def History():
-    adrr=get_tasks()
-    adr=adrr['ip']
+    adrr = get_tasks()
+    adr = adrr['ip']
     # adr='94.187.8.0'
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    responseip=requests.get(sourceip).json()
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        asn=a
+        asn = a
     if (any(c.isalpha() for c in b) == False):
-        asn=b
+        asn = b
 
-    history={}
+    history = {}
 
-    sous_dict={}
+    sous_dict = {}
 
-    url="https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+asn
+    url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+asn
 
-    hist=requests.get(url).json()
+    hist = requests.get(url).json()
 
-    liste=[]
+    liste = []
 
-    pref=responseip["data"]["records"][0][0]["value"]
-    pref=pref[0:(len(pref)-3)]
+    pref = responseip["data"]["records"][0][0]["value"]
+    pref = pref[0:(len(pref)-3)]
 
     for p in hist["data"]["by_origin"][0]["prefixes"]:
 
         liste.append(p["prefix"])
 
-    j=0
+    j = 0
     while(j < len(liste)):
-        liste[j]=liste[j][0:(len(liste[j])-3)]
-        j=j+1
+        liste[j] = liste[j][0:(len(liste[j])-3)]
+        j = j+1
 
     for l in liste:
 
@@ -304,7 +309,7 @@ def History():
 
             # date = "2022"
 
-            i=0
+            i = 0
 
             for d in p["timelines"]:
 
@@ -314,9 +319,9 @@ def History():
 
                 if "2022" in d["starttime"]:
 
-                    sous_dict[d["starttime"][0:10]]=d["full_peers_seeing"]
-                    sous_dict[d["endtime"][0:10]]=d["full_peers_seeing"]
-                    i=i+1
+                    sous_dict[d["starttime"][0:10]] = d["full_peers_seeing"]
+                    sous_dict[d["endtime"][0:10]] = d["full_peers_seeing"]
+                    i = i+1
 
     return sous_dict
 
@@ -324,37 +329,37 @@ def History():
 @ app.route("/all")
 def All():
 
-    adrr=get_tasks()
-    adr=adrr['ip']
+    adrr = get_tasks()
+    adr = adrr['ip']
     # adr='91.232.100.0'
-    dictionnaire={}
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    responseip=requests.get(sourceip).json()
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    dictionnaire = {}
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        asn=a
+        asn = a
     if (any(c.isalpha() for c in b) == False):
-        asn=b
-    sous_dict={}
+        asn = b
+    sous_dict = {}
 
-    list_prefixe="https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
-    lists=requests.get(list_prefixe).json()
-    j=0
+    list_prefixe = "https://stat.ripe.net/data/announced-prefixes/data.json?resource="+asn
+    lists = requests.get(list_prefixe).json()
+    j = 0
     for i in lists["data"]["prefixes"]:
-        prefix=i["prefix"]
-        dictionnaire[j]=prefix
-        j=j+1
-    sous_dict={}
+        prefix = i["prefix"]
+        dictionnaire[j] = prefix
+        j = j+1
+    sous_dict = {}
 
-    k=0
+    k = 0
 
     while (k < len(dictionnaire)):
 
-        url="https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource=" + \
+        url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource=" + \
             str(dictionnaire[k][0:(len(dictionnaire[k])-3)])
 
-        hist=requests.get(url).json()
+        hist = requests.get(url).json()
 
         for p in hist["data"]["by_origin"]:
             if (p["origin"] == asn):
@@ -366,45 +371,46 @@ def All():
 
                     if "2022" in d["starttime"]:
                         if (d["starttime"][0:10] in sous_dict.keys()):
-                            sous_dict[d["starttime"][0:10]]=sous_dict[d["starttime"]
+                            sous_dict[d["starttime"][0:10]] = sous_dict[d["starttime"]
                                                                         [0:10]]+d["full_peers_seeing"]
                         if (d["endtime"][0:10] in sous_dict.keys()):
-                            sous_dict[d["endtime"][0:10]]=sous_dict[d["endtime"]
+                            sous_dict[d["endtime"][0:10]] = sous_dict[d["endtime"]
                                                                       [0:10]] + d["full_peers_seeing"]
                         else:
                             sous_dict[d["starttime"][0:10]
-                                      ]=d["full_peers_seeing"]
+                                      ] = d["full_peers_seeing"]
                             sous_dict[d["endtime"][0:10]
-                                      ]=d["full_peers_seeing"]
+                                      ] = d["full_peers_seeing"]
 
-        k=k+1
+        k = k+1
     for i in sous_dict.keys():
-        sous_dict[i]=sous_dict[i]/len(dictionnaire)
+        sous_dict[i] = sous_dict[i]/len(dictionnaire)
 
     return sous_dict
 
 
 @ app.route("/pred")
 def Pred():
-    adrr=get_tasks()
-    adr=adrr['ip']
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    responseip=requests.get(sourceip).json()
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    adrr = get_tasks()
+    adr = adrr['ip']
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        asn=a
+        asn = a
     if (any(c.isalpha() for c in b) == False):
-        asn=b
-    url='https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-11T12%3A00%3A00&hide_empty_samples=false&max_samples=5000&resource=AS' + \
+        asn = b
+    url = 'https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-11T12%3A00%3A00&hide_empty_samples=false&max_samples=5000&resource=AS' + \
         str(asn)+'&starttime=2021-04-11T00%3A00%3A00'
-    r=requests.get(url)
-    json=r.json()
+    r = requests.get(url)
+    json = r.json()
     return json
 
-@app.route("/pay")
+
+@ app.route("/pay")
 def pays():
-    country_names={
+    country_names = {
         {"afghanistan": "AF"},
         {"land Islands": "AX"},
         {"albania": "AL"},
@@ -695,55 +701,55 @@ def pays():
 
 @ app.route("/message")
 def message():
-    adrr=get_tasks()
-    adr=adrr['ip']
+    adrr = get_tasks()
+    adr = adrr['ip']
 
-    sourceip="https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-    responseip=requests.get(sourceip).json()
-    a=responseip["data"]["irr_records"][0][2]["value"]
-    b=responseip["data"]["irr_records"][0][1]["value"]
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b = responseip["data"]["irr_records"][0][1]["value"]
     if (any(c.isalpha() for c in a) == False):
-        asn=a
+        asn = a
     if (any(c.isalpha() for c in b) == False):
-        asn=b
-    dict={}
-    mssg={}
-    previous_date=datetime.datetime.today() - datetime.timedelta(days=1)
-    times=str(int(round(previous_date.timestamp())))
+        asn = b
+    dict = {}
+    mssg = {}
+    previous_date = datetime.datetime.today() - datetime.timedelta(days=1)
+    times = str(int(round(previous_date.timestamp())))
 
-    curr_date=datetime.datetime.now()
-    times1=str(int(round(curr_date.timestamp())))
+    curr_date = datetime.datetime.now()
+    times1 = str(int(round(curr_date.timestamp())))
 
-    url='https://ioda.caida.org/ioda/data/events?from=' + \
+    url = 'https://ioda.caida.org/ioda/data/events?from=' + \
         times+'&until='+times1+'&human=true&meta=asn/'+asn
-    events=requests.get(url).json()
+    events = requests.get(url).json()
 
-    start_time=events["queryParameters"]["from"]
-    end_time=events["queryParameters"]["until"]
+    start_time = events["queryParameters"]["from"]
+    end_time = events["queryParameters"]["until"]
 
-    timestamp1=datetime.datetime.fromtimestamp(int(start_time))
-    start=timestamp1.strftime('%Y-%m-%d %H:%M:%S')
+    timestamp1 = datetime.datetime.fromtimestamp(int(start_time))
+    start = timestamp1.strftime('%Y-%m-%d %H:%M:%S')
 
-    timestamp2=datetime.datetime.fromtimestamp(int(end_time))
-    end=timestamp2.strftime('%Y-%m-%d %H:%M:%S')
+    timestamp2 = datetime.datetime.fromtimestamp(int(end_time))
+    end = timestamp2.strftime('%Y-%m-%d %H:%M:%S')
 
-    list_events=events["data"]["events"]
+    list_events = events["data"]["events"]
 
-    dict["events"]=list_events
+    dict["events"] = list_events
 
-    dict["Start-time"]=start
+    dict["Start-time"] = start
 
-    dict["End-time"]=end
+    dict["End-time"] = end
 
-    s=""
+    s = ""
 
     if not list_events:
-        s="No outages occured while you were away"
-        mssg["outages"]=s
+        s = "No outages occured while you were away"
+        mssg["outages"] = s
 
     else:
-        s="An Outage Occured"
-        mssg["outages"]=s
+        s = "An Outage Occured"
+        mssg["outages"] = s
 
     return mssg
 
