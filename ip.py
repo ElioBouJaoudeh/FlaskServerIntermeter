@@ -660,7 +660,7 @@ def pays():
         {"zambia": "ZM"},
         {"zimbabwe": "ZW"}
     }
-    return country_names
+    return country_names.json()
 
 # @app.route("/alert")
 # def alert():
@@ -757,78 +757,78 @@ def message():
 
     return mssg
 
-    @app.route("/ml")
-    def ML():
-        adrr = get_tasks()
-        adr=adrr['ip']
-        #adr='94.187.8.0'
-        sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
-        responseip = requests.get(sourceip).json()
-        a = responseip["data"]["irr_records"][0][2]["value"]
-        b=responseip["data"]["irr_records"][0][1]["value"]
-        if (any(c.isalpha() for c in a)==False):
-            asn=a
-        if (any(c.isalpha() for c in b)==False):
-            asn=b
-        url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+asn
+@app.route("/ml")
+def ML():
+    adrr = get_tasks()
+    adr=adrr['ip']
+    #adr='94.187.8.0'
+    sourceip = "https://stat.ripe.net/data/whois/data.json?resource="+adr+"%2F24"
+    responseip = requests.get(sourceip).json()
+    a = responseip["data"]["irr_records"][0][2]["value"]
+    b=responseip["data"]["irr_records"][0][1]["value"]
+    if (any(c.isalpha() for c in a)==False):
+        asn=a
+    if (any(c.isalpha() for c in b)==False):
+        asn=b
+    url = "https://stat.ripe.net/data/routing-history/data.json?min_peers=0&resource="+asn
 
-        pref = responseip["data"]["records"][0][0]["value"]
-        pref=pref[0:(len(pref)-3)]
-        url = 'https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-15T12%3A00%3A00&hide_empty_samples=false&max_samples=10000&resource='+pref+'&starttime=2021-04-29T00%3A00%3A00'
-        r = requests.get(url)
-        json = r.json()
-        df = pd.DataFrame(json['data']['updates'])
-        df.drop("starttime", axis=1, inplace=True)
-        r=df.shape[0]-1
-        nb=df.iloc[r,0:2].values
-        df = df.drop(df.shape[0]-1, axis=0)
+    pref = responseip["data"]["records"][0][0]["value"]
+    pref=pref[0:(len(pref)-3)]
+    url = 'https://stat.ripe.net/data/bgp-update-activity/data.json?endtime=2022-04-15T12%3A00%3A00&hide_empty_samples=false&max_samples=10000&resource='+pref+'&starttime=2021-04-29T00%3A00%3A00'
+    r = requests.get(url)
+    json = r.json()
+    df = pd.DataFrame(json['data']['updates'])
+    df.drop("starttime", axis=1, inplace=True)
+    r=df.shape[0]-1
+    nb=df.iloc[r,0:2].values
+    df = df.drop(df.shape[0]-1, axis=0)
 
-        l=[]
-        av=df["announcements"].mean()
-        l.append(int(df["announcements"][0]>av))
-        l.append(int(df["announcements"][1]>av))
-        i=2
-        while (i<df.shape[0]):
-            m=(df["announcements"][i-1]+df["announcements"][i-2])/2
-            if (df["announcements"][i]<m):
-                l.append(0)
-            else:
-                l.append(1)
-            i=i+1
-        df["label"]=l
-
-
-        training_set, test_set = train_test_split(df, test_size = 0.2)   
-
-        X_train = training_set.iloc[:,0:2].values
-        Y_train = training_set.iloc[:,2].values
-
-
-        classifier = SVC(kernel='rbf', random_state = 1,gamma=0.01)
-        classifier.fit(X_train,Y_train)
-        Y_pred = classifier.predict(nb)
-        s=""
-        mssg={}
-        if not list_events:
-            s="No outages occured while you were away"
-            mssg["outages"]=s
-
+    l=[]
+    av=df["announcements"].mean()
+    l.append(int(df["announcements"][0]>av))
+    l.append(int(df["announcements"][1]>av))
+    i=2
+    while (i<df.shape[0]):
+        m=(df["announcements"][i-1]+df["announcements"][i-2])/2
+        if (df["announcements"][i]<m):
+            l.append(0)
         else:
-            s="An Outage Occured"
-            mssg["outages"]=s
+            l.append(1)
+        i=i+1
+    df["label"]=l
+
+
+    training_set, test_set = train_test_split(df, test_size = 0.2)   
+
+    X_train = training_set.iloc[:,0:2].values
+    Y_train = training_set.iloc[:,2].values
+
+
+    classifier = SVC(kernel='rbf', random_state = 1,gamma=0.01)
+    classifier.fit(X_train,Y_train)
+    Y_pred = classifier.predict(nb)
+    s=""
+    mssg={}
+    if not list_events:
+        s="No outages occured while you were away"
+        mssg["outages"]=s
+
+    else:
+        s="An Outage Occured"
+        mssg["outages"]=s
 
 
 
-        if (Y_pred==1):
+    if (Y_pred==1):
 
-            s="Your network is prone to instability in the upcoming hours!"
-            mssg["outages"]=s
+        s="Your network is prone to instability in the upcoming hours!"
+        mssg["outages"]=s
 
-        else:
-            s="Safe:No instability detected!"
-            mssg["outages"]=s
+    else:
+        s="Safe:No instability detected!"
+        mssg["outages"]=s
 
-        return mssg
+    return mssg
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
